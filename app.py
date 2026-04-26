@@ -6,24 +6,24 @@ import plotly.graph_objects as go
 import plotly.express as px
 from sklearn.ensemble import RandomForestClassifier
 
-# --- Page Config ---
+
 st.set_page_config(
     page_title="CardioVision",
     page_icon="🫀",
     layout="wide"
 )
 
-# --- Load Model ---
+
 model = joblib.load("cardiovision_model.pkl")
 scaler = joblib.load("scaler.pkl")
 df = pd.read_csv("heart.csv")
 
-# --- Header ---
+
 st.title("🫀 CardioVision")
 st.markdown("#### AI-Powered Heart Disease Risk Prediction")
 st.markdown("---")
 
-# --- Sidebar Inputs ---
+
 st.sidebar.header("📋 Enter Patient Details")
 
 age = st.sidebar.slider("Age", 20, 80, 45)
@@ -57,7 +57,6 @@ thal = st.sidebar.selectbox("Thalassemia", [
     "3 - Reversible Defect"
 ])
 
-# --- Process Inputs ---
 sex_val = 1 if sex == "Male" else 0
 cp_val = int(cp[0])
 fbs_val = 1 if fbs == "Yes" else 0
@@ -72,11 +71,11 @@ input_data = np.array([[age, sex_val, cp_val, trestbps, chol,
 
 input_scaled = scaler.transform(input_data)
 
-# --- Prediction ---
+
 prediction = model.predict(input_scaled)[0]
 probability = model.predict_proba(input_scaled)[0]
 
-# --- Results Section ---
+
 col1, col2, col3 = st.columns(3)
 
 with col1:
@@ -91,7 +90,7 @@ with col3:
 
 st.markdown("---")
 
-# --- Gauge Chart ---
+
 fig_gauge = go.Figure(go.Indicator(
     mode="gauge+number",
     value=probability[1] * 100,
@@ -113,7 +112,7 @@ with col_g1:
     st.subheader("🎯 Risk Gauge")
     st.plotly_chart(fig_gauge, use_container_width=True)
 
-# --- Feature Importance Chart ---
+
 with col_g2:
     st.subheader("📊 Top Factors Affecting Prediction")
     feature_names = ["age", "sex", "cp", "trestbps", "chol",
@@ -132,7 +131,7 @@ with col_g2:
 
 st.markdown("---")
 
-# --- Dataset Stats ---
+
 st.subheader("📈 Dataset Insights")
 col_d1, col_d2 = st.columns(2)
 
@@ -151,6 +150,6 @@ with col_d2:
                           color_discrete_map={0: "green", 1: "red"})
     st.plotly_chart(fig_chol, use_container_width=True)
 
-# --- Footer ---
+
 st.markdown("---")
 st.caption("⚠️ This tool is for educational purposes only. Always consult a qualified doctor for medical advice.")
